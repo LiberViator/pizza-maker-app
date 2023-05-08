@@ -28,7 +28,7 @@ export default function Home() {
 
 	return (
 		<main
-			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,16%),1fr,minmax(160px,16%)] md:grid-rows-[auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-20 ${font.className}`}
+			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,min(16%,256px)),1fr,min(16%,256px)] md:grid-rows-[auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-20 ${font.className}`}
 		>
 			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 			<Options
@@ -158,7 +158,7 @@ export function Recipe({ choosenOptions }) {
 				<ul className="flex flex-col gap-4">
 					{choosenOptions.map((_choosenOption) => (
 						<li key={_choosenOption.componentId}>
-							<span className="capitalize">
+							<span className="flex gap-3 capitalize">
 								<span className="text-amber-600">{_choosenOption.componentName}:</span>{" "}
 								<span className="">{_choosenOption.choosenOpt?.name}</span>
 							</span>
