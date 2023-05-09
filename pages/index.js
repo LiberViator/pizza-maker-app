@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Montserrat } from "next/font/google";
+import { useThree, Canvas } from "@react-three/fiber";
 
 const font = Montserrat({ subsets: ["latin"] });
 
@@ -28,7 +29,7 @@ export default function Home() {
 
 	return (
 		<main
-			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,min(16%,256px)),1fr,min(16%,256px)] md:grid-rows-[auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-20 ${font.className}`}
+			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,min(16%,256px)),1fr,minmax(160px,min(16%,256px))] md:grid-rows-[auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-20 ${font.className}`}
 		>
 			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 			<Options
@@ -37,7 +38,7 @@ export default function Home() {
 				setChoosenOptions={setChoosenOptions}
 				currentComponentChoosenOptions={currentComponentChoosenOptions}
 			/>
-			<Model />
+			<PizzaCanvas />
 			<Navigation components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 			<Recipe choosenOptions={choosenOptions} />
 		</main>
@@ -53,7 +54,10 @@ export function Steps({ components, currentStep, setCurrentStep }) {
 		<section className="flex overflow-x-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
 			<ul className="flex flex-row gap-6 md:flex-col">
 				{components.map((_component) => (
-					<li className={_component.id === currentStep ? "text-white" : "text-amber-600"} key={_component.id}>
+					<li
+						className={_component.id === currentStep ? "text-xl/6 text-white" : "text-base/6 text-amber-600"}
+						key={_component.id}
+					>
 						<a href="#" onClick={() => chooseStep(_component.id)}>
 							<span className="uppercase">{_component.name}</span>
 						</a>
@@ -79,27 +83,56 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 			<div className="mb-2 text-center text-amber-600">
 				Choose <span className="capitalize">{currentComponent.name}</span>
 			</div>
-			<ul className="flex justify-center gap-6 text-white">
-				{currentComponent.options?.map((_currentComponentOption) => (
-					<li key={_currentComponentOption.id}>
-						<a href="#" onClick={() => updateChoosenOptions(_currentComponentOption)}>
-							<span
-								className={`text-xl uppercase ${
-									currentComponentChoosenOptions.choosenOpt?.id === _currentComponentOption.id ? "text-white" : "text-amber-600"
-								}`}
-							>
-								{_currentComponentOption.name}
-							</span>
-						</a>
-					</li>
-				))}
-			</ul>
+			<div className="relative">
+				<ul className="flex justify-center gap-6 text-white">
+					{currentComponent.options?.map((_currentComponentOption) => (
+						<li key={_currentComponentOption.id}>
+							<a href="#" onClick={() => updateChoosenOptions(_currentComponentOption)}>
+								<span
+									className={`text-center text-xl uppercase ${
+										currentComponentChoosenOptions.choosenOpt?.id === _currentComponentOption.id
+											? "text-white"
+											: "text-amber-600"
+									}`}
+								>
+									{_currentComponentOption.name}
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+				<span className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-amber-900 via-amber-900/0 to-amber-900 "></span>
+			</div>
 		</section>
 	);
 }
 
+export function PizzaCanvas() {
+	return (
+		<Canvas
+			className="md:col-start-2 md:col-end-2 md:row-start-2 md:row-end-2"
+			style=" height: 100%; width: 100%;"
+			camera={{
+				position: [5, 5, -5],
+				fov: 75,
+			}}
+		>
+			<ambientLight />
+			<pointLight position={[10, 10, 10]} />
+			<Model />
+		</Canvas>
+	);
+}
+
 export function Model() {
-	return <section className="md:col-start-2 md:row-start-2">Model</section>;
+	const { viewport } = useThree();
+
+	return (
+		<mesh scale={[viewport.width, viewport.height, 1]}>
+			<boxGeometry args={[1, 1, 1]} />
+			<meshStandardMaterial color="orange" />
+		</mesh>
+	);
 }
 
 export function Navigation({ components, currentStep, setCurrentStep }) {
@@ -148,6 +181,7 @@ export function Recipe({ choosenOptions }) {
 		const totalPrice = pricesArray.reduce((a, b) => a + b, 0);
 		setTotal(totalPrice);
 	}, [choosenOptions]);
+	useEffect(() => {});
 
 	return (
 		<section className="absolute inset-x-0 bottom-0 flex translate-y-[calc(100%-64px)] flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3 hover:translate-y-0 md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-4 md:translate-y-0 md:self-end md:bg-transparent md:p-0">
