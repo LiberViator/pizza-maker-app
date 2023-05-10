@@ -3,7 +3,7 @@
 		"id": 0,
 		"name": "bread",
 		"options": [
-			{ "id": 0, "name": "thin", "price": 10 },
+			{ "id": 0, "name": "thin", "price": 10, "model3d": {} },
 			{ "id": 1, "name": "thick", "price": 12 }
 		]
 	},

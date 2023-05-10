@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Montserrat } from "next/font/google";
-import { useThree, Canvas } from "@react-three/fiber";
+
+import PizzaCanvas from "@/components/PizzaCanvas";
 
 const font = Montserrat({ subsets: ["latin"] });
 
@@ -38,7 +39,7 @@ export default function Home() {
 				setChoosenOptions={setChoosenOptions}
 				currentComponentChoosenOptions={currentComponentChoosenOptions}
 			/>
-			<PizzaCanvas />
+			<PizzaCanvas currentStep={currentStep} />
 			<Navigation components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 			<Recipe choosenOptions={choosenOptions} />
 		</main>
@@ -104,34 +105,6 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 				<span className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-amber-900 via-amber-900/0 to-amber-900 "></span>
 			</div>
 		</section>
-	);
-}
-
-export function PizzaCanvas() {
-	return (
-		<Canvas
-			className="md:col-start-2 md:col-end-2 md:row-start-2 md:row-end-2"
-			style=" height: 100%; width: 100%;"
-			camera={{
-				position: [5, 5, -5],
-				fov: 75,
-			}}
-		>
-			<ambientLight />
-			<pointLight position={[10, 10, 10]} />
-			<Model />
-		</Canvas>
-	);
-}
-
-export function Model() {
-	const { viewport } = useThree();
-
-	return (
-		<mesh scale={[viewport.width, viewport.height, 1]}>
-			<boxGeometry args={[1, 1, 1]} />
-			<meshStandardMaterial color="orange" />
-		</mesh>
 	);
 }
 
