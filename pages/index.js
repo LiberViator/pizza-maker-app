@@ -10,6 +10,12 @@ export default function Home() {
 	const [choosenOptions, setChoosenOptions] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
 
+	const test = () => {
+		window.addEventListener("resize", () => {
+			console.log("hello");
+		});
+	};
+
 	useEffect(() => {
 		fetch("/db/pizzaOptions.json")
 			.then((res) => res.json())
@@ -167,7 +173,8 @@ export function Recipe({ choosenOptions }) {
 						<li key={_choosenOption.componentId}>
 							<span className="flex gap-3 capitalize">
 								<span className="text-amber-600">{_choosenOption.componentName}:</span>{" "}
-								<span className="">{_choosenOption.choosenOpt?.name}</span>
+								<span className="w-full">{_choosenOption.choosenOpt?.name}</span>
+								<span className="text-right text-amber-600">{_choosenOption.choosenOpt?.price}</span>
 							</span>
 						</li>
 					))}
@@ -175,7 +182,7 @@ export function Recipe({ choosenOptions }) {
 				<hr />
 				<div className="flex justify-between">
 					<span>Total</span>
-					<span>{total}</span>
+					<span className="text-right">{total}</span>
 				</div>
 			</div>
 		</section>

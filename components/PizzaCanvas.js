@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useThree, Canvas } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
 
 export default function PizzaCanvas({ currentStep }) {
 	return (
@@ -7,12 +8,12 @@ export default function PizzaCanvas({ currentStep }) {
 			<Canvas
 				style={{ position: "absolute" }}
 				camera={{
-					position: [3, currentStep, 2],
+					position: [0.4, 0.4, 0.4],
 					fov: 75,
 				}}
 			>
 				<ambientLight />
-				<pointLight castShadow position={[10, 10, 10]} />
+				<pointLight castShadow position={[2, 2, 2]} />
 				<PizzaModel currentStep={currentStep} />
 			</Canvas>
 		</section>
@@ -20,18 +21,44 @@ export default function PizzaCanvas({ currentStep }) {
 }
 
 export function PizzaModel({ currentStep }) {
-	// const { nodes, materials } = useGLTF("/model-transformed.glb");
+	const { nodes, materials } = useGLTF("/pizza.gltf");
 
 	return (
 		<>
-			<mesh castShadow receiveShadow position={[0, currentStep, 0]} geometry={{}} material={{}}>
-				<boxGeometry args={[1, 1, 1]} />
-				<meshStandardMaterial color="orange" />
-			</mesh>
-			<mesh castShadow receiveShadow position={[0, currentStep + 2, 0]}>
-				<boxGeometry args={[1, 1, 1]} />
-				<meshStandardMaterial color="orange" />
-			</mesh>
+			<group dispose={null}>
+				<mesh castShadow receiveShadow geometry={nodes.group1309335234.geometry} material={materials.mat14} />
+				<mesh castShadow receiveShadow geometry={nodes.group13992555.geometry} material={materials.mat19} />
+				<mesh castShadow receiveShadow geometry={nodes.group1051877250.geometry} material={materials.mat18} />
+				<mesh castShadow receiveShadow geometry={nodes.group60956185.geometry} material={materials.mat21} />
+				<mesh castShadow receiveShadow geometry={nodes.group1240131638.geometry} material={materials.mat8} />
+				<mesh castShadow receiveShadow geometry={nodes.group1920391555.geometry} material={materials.mat8} />
+				<mesh castShadow receiveShadow geometry={nodes.group1299724127.geometry} material={materials.mat8} />
+				<mesh castShadow receiveShadow geometry={nodes.group273593077.geometry} material={materials.mat8} />
+				<mesh castShadow receiveShadow geometry={nodes.group1908690590.geometry} material={materials.mat8} />
+				<mesh castShadow receiveShadow geometry={nodes.group65050131.geometry} material={materials.mat8} />
+				<mesh castShadow receiveShadow geometry={nodes.group866913526.geometry} material={materials.mat23} />
+				<mesh castShadow receiveShadow geometry={nodes.group1445827536.geometry} material={materials.mat23} />
+				<mesh castShadow receiveShadow geometry={nodes.group1974958938.geometry} material={materials.mat23} />
+				<mesh castShadow receiveShadow geometry={nodes.group1990690964.geometry} material={materials.mat23} />
+				<mesh castShadow receiveShadow geometry={nodes.group922813554.geometry} material={materials.mat23} />
+				<mesh castShadow receiveShadow geometry={nodes.group69203596.geometry} material={materials.mat23} />
+				<mesh castShadow receiveShadow geometry={nodes.group1376317551.geometry} material={materials.mat8} />
+				<mesh castShadow receiveShadow geometry={nodes.group2021932393.geometry} material={materials.mat20} />
+				<mesh castShadow receiveShadow geometry={nodes.group594165506.geometry} material={materials.mat20} />
+				<mesh castShadow receiveShadow geometry={nodes.group754384981.geometry} material={materials.mat20} />
+				<mesh castShadow receiveShadow geometry={nodes.group993462267.geometry} material={materials.mat20} />
+				<mesh castShadow receiveShadow geometry={nodes.group1864783614.geometry} material={materials.mat20} />
+				<mesh castShadow receiveShadow geometry={nodes.group617698938.geometry} material={materials.mat20} />
+				<mesh castShadow receiveShadow geometry={nodes.group1369352001.geometry} material={materials.mat10} />
+				<mesh castShadow receiveShadow geometry={nodes.group1642590618.geometry} material={materials.mat10} />
+				<mesh castShadow receiveShadow geometry={nodes.group274291298.geometry} material={materials.mat10} />
+				<mesh castShadow receiveShadow geometry={nodes.group1800032711.geometry} material={materials.mat10} />
+				<mesh castShadow receiveShadow geometry={nodes.group2073463504.geometry} material={materials.mat10} />
+				<mesh castShadow receiveShadow geometry={nodes.group565404572.geometry} material={materials.mat10} />
+				<mesh castShadow receiveShadow geometry={nodes.group1475154722.geometry} material={materials.mat10} />
+			</group>
 		</>
 	);
 }
+
+useGLTF.preload("/pizza.gltf");
