@@ -10,12 +10,6 @@ export default function Home() {
 	const [choosenOptions, setChoosenOptions] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
 
-	const test = () => {
-		window.addEventListener("resize", () => {
-			console.log("hello");
-		});
-	};
-
 	useEffect(() => {
 		fetch("/db/pizzaOptions.json")
 			.then((res) => res.json())
@@ -154,6 +148,7 @@ export function Navigation({ components, currentStep, setCurrentStep }) {
 
 export function Recipe({ choosenOptions }) {
 	const [total, setTotal] = useState();
+	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
 		const pricesArray = choosenOptions.map((choosenOption) => choosenOption.choosenOpt?.price || 0);
@@ -163,7 +158,12 @@ export function Recipe({ choosenOptions }) {
 	useEffect(() => {});
 
 	return (
-		<section className="absolute inset-x-0 bottom-0 flex translate-y-[calc(100%-64px)] flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3 hover:translate-y-0 md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-4 md:translate-y-0 md:self-end md:bg-transparent md:p-0">
+		<section
+			className={`${
+				isOpen && "translate-y-0"
+			} absolute inset-x-0 bottom-0 flex translate-y-[calc(100%-64px)] cursor-pointer flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3  md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-4 md:translate-y-0 md:self-end md:bg-transparent md:p-0`}
+			onClick={() => setIsOpen(!isOpen)}
+		>
 			<span className="mb-4 h-1 w-20 rounded bg-white md:hidden"></span>
 			<div className="flex w-full flex-col gap-4 text-amber-950 md:text-white">
 				<div className="">Your order</div>
