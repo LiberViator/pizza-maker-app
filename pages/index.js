@@ -113,7 +113,7 @@ export function Navigation({ components, currentStep, setCurrentStep }) {
 	const nextStep = () => currentStep < components.length - 1 && setCurrentStep(currentStep + 1);
 
 	return (
-		<section className="flex w-full justify-center gap-4 justify-self-center md:col-start-2 md:col-end-2 md:row-start-3 md:row-end-3 md:self-end">
+		<section className="paddings flex w-full justify-center gap-4 justify-self-center md:col-start-2 md:col-end-2 md:row-start-3 md:row-end-3 md:self-end">
 			<button onClick={prevStep} className="flex h-12 w-12 items-center justify-center rounded-3xl bg-white shadow-xl">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -158,33 +158,37 @@ export function Recipe({ choosenOptions }) {
 	useEffect(() => {});
 
 	return (
-		<section
-			className={`${
-				isOpen && "translate-y-0"
-			} absolute inset-x-0 bottom-0 flex translate-y-[calc(100%-64px)] cursor-pointer flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3  md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-4 md:translate-y-0 md:self-end md:bg-transparent md:p-0`}
-			onClick={() => setIsOpen(!isOpen)}
-		>
-			<span className="mb-4 h-1 w-20 rounded bg-white md:hidden"></span>
-			<div className="flex w-full flex-col gap-4 text-amber-950 md:text-white">
-				<div className="">Your order</div>
-				<hr className="" />
-				<ul className="flex flex-col gap-4">
-					{choosenOptions.map((_choosenOption) => (
-						<li key={_choosenOption.componentId}>
-							<span className="flex gap-3 capitalize">
-								<span className="text-amber-600">{_choosenOption.componentName}:</span>{" "}
-								<span className="w-full">{_choosenOption.choosenOpt?.name}</span>
+		<>
+			<section
+				className={`${
+					isOpen ? "translate-y-0" : "translate-y-[calc(100%-64px)]"
+				} absolute inset-x-0 bottom-0 z-10 flex max-h-[calc(100vh-32px)] flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3 md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-4 md:translate-y-0 md:self-end md:bg-transparent md:p-0`}
+				onClick={() => !isOpen && setIsOpen(!isOpen)}
+			>
+				<span className="mb-4 h-1 w-20 flex-shrink-0 rounded bg-white md:hidden"></span>
+				<div className="flex h-auto w-full flex-col gap-4 overflow-y-scroll text-amber-950 md:overflow-y-auto md:text-white">
+					<div className="">Your order</div>
+					<hr className="" />
+					<ul className="flex flex-col gap-4">
+						{choosenOptions.map((_choosenOption) => (
+							<li className="flex w-full gap-3 overflow-x-hidden capitalize" key={_choosenOption.componentId}>
+								<span className="text-amber-600">{_choosenOption.componentName}:</span>
+								<span className="flex-grow">{_choosenOption.choosenOpt?.name}</span>
 								<span className="text-right text-amber-600">{_choosenOption.choosenOpt?.price}</span>
-							</span>
-						</li>
-					))}
-				</ul>
-				<hr />
-				<div className="flex justify-between">
-					<span>Total</span>
-					<span className="text-right">{total}</span>
+							</li>
+						))}
+					</ul>
+					<hr />
+					<div className="flex justify-between">
+						<span>Total</span>
+						<span className="text-right">{total}</span>
+					</div>
 				</div>
-			</div>
-		</section>
+			</section>
+			<aside
+				className={`${!isOpen ? "hidden" : ""}absolute inset-0 md:hidden`}
+				onClick={() => isOpen && setIsOpen(!isOpen)}
+			></aside>
+		</>
 	);
 }

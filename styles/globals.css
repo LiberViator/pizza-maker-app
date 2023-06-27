@@ -9,4 +9,8 @@
 	main {
 		@apply min-h-screen;
 	}
+	.paddings {
+		@apply px-6;
+		@apply md:px-8;
+	}
 }
