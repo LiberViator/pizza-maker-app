@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Montserrat } from "next/font/google";
+
+import { register } from "swiper/element/bundle";
+register();
 
 import PizzaCanvas from "@/components/PizzaCanvas";
 
@@ -47,24 +50,30 @@ export default function Home() {
 }
 
 export function Steps({ components, currentStep, setCurrentStep }) {
-	const chooseStep = (stepId) => {
-		setCurrentStep(stepId);
+	const swiperEl = useRef(null);
+	const swiperParams = {
+		slidesPerView: components.length,
+		centeredSlides: true,
+		slideToClickedSlide: true,
+		breakpoints: {
+			768: { direction: "vertical" },
+		},
 	};
 
+	useEffect(() => {
+		Object.assign(swiperEl.current, swiperParams);
+		swiperEl.current.addEventListener("slidechange", (e) => setCurrentStep(swiperEl.current.swiper.activeIndex));
+	}, []);
+
 	return (
-		<section className="flex overflow-x-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
-			<ul className="flex flex-row gap-6 md:flex-col">
+		<section className="overflow-x-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
+			<swiper-container ref={swiperEl} className="">
 				{components.map((_component) => (
-					<li
-						className={_component.id === currentStep ? "text-xl/6 text-white" : "text-base/6 text-amber-600"}
-						key={_component.id}
-					>
-						<a href="#" onClick={() => chooseStep(_component.id)}>
-							<span className="uppercase">{_component.name}</span>
-						</a>
-					</li>
+					<swiper-slide key={_component.id}>
+						<span className="uppercase">{_component.name}</span>
+					</swiper-slide>
 				))}
-			</ul>
+			</swiper-container>
 		</section>
 	);
 }
@@ -137,7 +146,7 @@ export function Navigation({ components, currentStep, setCurrentStep }) {
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="absolute  right-3 h-6 w-6"
+					className="absolute right-3 h-6 w-6"
 				>
 					<path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
 				</svg>
@@ -167,8 +176,11 @@ export function Recipe({ choosenOptions }) {
 			>
 				<span className="mb-4 h-1 w-20 flex-shrink-0 rounded bg-white md:hidden"></span>
 				<div className="flex h-auto w-full flex-col gap-4 overflow-y-scroll text-amber-950 md:overflow-y-auto md:text-white">
-					<div className="">Your order</div>
-					<hr className="" />
+					<div className="flex justify-between">
+						<span>Your order</span>
+						<span className={`${isOpen ? "hidden" : ""} text-right md:hidden`}>{total}</span>
+					</div>
+					<hr />
 					<ul className="flex flex-col gap-4">
 						{choosenOptions.map((_choosenOption) => (
 							<li className="flex w-full gap-3 overflow-x-hidden capitalize" key={_choosenOption.componentId}>
