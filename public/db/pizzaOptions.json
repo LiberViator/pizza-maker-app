@@ -22,7 +22,7 @@
 			{ "id": 0, "name": "none", "price": 0 },
 			{ "id": 1, "name": "paprica", "price": 10 },
 			{ "id": 2, "name": "olives", "price": 12 },
-			{ "id": 1, "name": "tomatoes", "price": 10 }
+			{ "id": 3, "name": "tomatoes", "price": 10 }
 		]
 	},
 	{

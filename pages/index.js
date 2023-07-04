@@ -51,23 +51,29 @@ export default function Home() {
 
 export function Steps({ components, currentStep, setCurrentStep }) {
 	const swiperEl = useRef(null);
-	const swiperParams = {
-		slidesPerView: components.length,
-		centeredSlides: true,
-		slideToClickedSlide: true,
-		breakpoints: {
-			768: { direction: "vertical" },
-		},
-	};
 
 	useEffect(() => {
+		const swiperParams = {
+			slidesPerView: 3,
+			centeredSlides: true,
+			slideToClickedSlide: true,
+			breakpoints: {
+				768: { direction: "vertical", centeredSlides: false },
+			},
+			on: {
+				slideChange(e) {
+					setCurrentStep(e.activeIndex);
+				},
+			},
+		};
+
 		Object.assign(swiperEl.current, swiperParams);
-		swiperEl.current.addEventListener("slidechange", (e) => setCurrentStep(swiperEl.current.swiper.activeIndex));
+		swiperEl.current.initialize();
 	}, []);
 
 	return (
-		<section className="overflow-x-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
-			<swiper-container ref={swiperEl} className="">
+		<section className="overflow-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
+			<swiper-container init="false" ref={swiperEl} className="w-full overflow-hidden">
 				{components.map((_component) => (
 					<swiper-slide key={_component.id}>
 						<span className="uppercase">{_component.name}</span>
@@ -89,7 +95,7 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 	};
 
 	return (
-		<section className="md:col-start-1 md:col-end-4 md:row-start-1">
+		<section className="overflow-hidden md:col-start-1 md:col-end-4 md:row-start-1">
 			<div className="mb-2 text-center text-amber-600">
 				Choose <span className="capitalize">{currentComponent.name}</span>
 			</div>
