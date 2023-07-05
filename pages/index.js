@@ -12,6 +12,7 @@ export default function Home() {
 	const [components, setComponent] = useState([]);
 	const [choosenOptions, setChoosenOptions] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
+	const swiperStepsEl = useRef(null);
 
 	useEffect(() => {
 		fetch("/db/pizzaOptions.json")
@@ -35,7 +36,7 @@ export default function Home() {
 		<main
 			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,min(16%,256px)),1fr,minmax(160px,min(16%,256px))] md:grid-rows-[auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-20 ${font.className}`}
 		>
-			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
+			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} swiperStepsEl={swiperStepsEl} />
 			<Options
 				currentComponent={currentComponent}
 				choosenOptions={choosenOptions}
@@ -43,39 +44,41 @@ export default function Home() {
 				currentComponentChoosenOptions={currentComponentChoosenOptions}
 			/>
 			<PizzaCanvas currentStep={currentStep} />
-			<Navigation components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
+			<Navigation
+				components={components}
+				currentStep={currentStep}
+				setCurrentStep={setCurrentStep}
+				swiperStepsEl={swiperStepsEl}
+			/>
 			<Recipe choosenOptions={choosenOptions} />
 		</main>
 	);
 }
 
-export function Steps({ components, currentStep, setCurrentStep }) {
-	const swiperEl = useRef(null);
+export function Steps({ components, currentStep, setCurrentStep, swiperStepsEl }) {
+	const swiperParams = {
+		centeredSlides: true,
+		slideToClickedSlide: true,
+		breakpoints: {
+			768: { direction: "vertical" },
+		},
+		on: {
+			slideChange(e) {
+				setCurrentStep(e.activeIndex);
+			},
+		},
+	};
 
 	useEffect(() => {
-		const swiperParams = {
-			slidesPerView: 3,
-			centeredSlides: true,
-			slideToClickedSlide: true,
-			breakpoints: {
-				768: { direction: "vertical", centeredSlides: false },
-			},
-			on: {
-				slideChange(e) {
-					setCurrentStep(e.activeIndex);
-				},
-			},
-		};
-
-		Object.assign(swiperEl.current, swiperParams);
-		swiperEl.current.initialize();
+		Object.assign(swiperStepsEl.current, swiperParams);
+		swiperStepsEl.current.initialize();
 	}, []);
 
 	return (
-		<section className="overflow-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
-			<swiper-container init="false" ref={swiperEl} className="w-full overflow-hidden">
+		<section className="h-full max-h-64 overflow-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
+			<swiper-container init="false" ref={swiperStepsEl} className="w-full overflow-hidden">
 				{components.map((_component) => (
-					<swiper-slide key={_component.id}>
+					<swiper-slide key={_component.id} className="">
 						<span className="uppercase">{_component.name}</span>
 					</swiper-slide>
 				))}
@@ -123,9 +126,21 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 	);
 }
 
-export function Navigation({ components, currentStep, setCurrentStep }) {
-	const prevStep = () => currentStep > 0 && setCurrentStep(currentStep - 1);
-	const nextStep = () => currentStep < components.length - 1 && setCurrentStep(currentStep + 1);
+export function Navigation({ components, currentStep, setCurrentStep, swiperStepsEl }) {
+	const prevStep = () => {
+		if (currentStep > 0) {
+			setCurrentStep(currentStep - 1);
+			swiperStepsEl.current.swiper.slidePrev();
+		}
+	};
+	const nextStep = () => {
+		if (currentStep < components.length - 1) {
+			setCurrentStep(currentStep + 1);
+			swiperStepsEl.current.swiper.slideNext();
+		} else if ((currentStep = components.length - 1)) {
+			alert("Finish");
+		}
+	};
 
 	return (
 		<section className="paddings flex w-full justify-center gap-4 justify-self-center md:col-start-2 md:col-end-2 md:row-start-3 md:row-end-3 md:self-end">
@@ -145,7 +160,7 @@ export function Navigation({ components, currentStep, setCurrentStep }) {
 				onClick={nextStep}
 				className="relative flex h-12 max-w-[256px] flex-1 items-center justify-center rounded-3xl bg-white px-8 shadow-xl"
 			>
-				Next
+				{currentStep < components.length - 1 ? "Next" : "Finish"}
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
