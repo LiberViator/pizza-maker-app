@@ -1,9 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Montserrat } from "next/font/google";
 
-import { register } from "swiper/element/bundle";
-register();
-
 import PizzaCanvas from "@/components/PizzaCanvas";
 
 const font = Montserrat({ subsets: ["latin"] });
@@ -12,7 +9,6 @@ export default function Home() {
 	const [components, setComponent] = useState([]);
 	const [choosenOptions, setChoosenOptions] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
-	const swiperStepsEl = useRef(null);
 
 	useEffect(() => {
 		fetch("/db/pizzaOptions.json")
@@ -36,7 +32,7 @@ export default function Home() {
 		<main
 			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,min(16%,256px)),1fr,minmax(160px,min(16%,256px))] md:grid-rows-[auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-20 ${font.className}`}
 		>
-			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} swiperStepsEl={swiperStepsEl} />
+			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 			<Options
 				currentComponent={currentComponent}
 				choosenOptions={choosenOptions}
@@ -44,45 +40,39 @@ export default function Home() {
 				currentComponentChoosenOptions={currentComponentChoosenOptions}
 			/>
 			<PizzaCanvas currentStep={currentStep} />
-			<Navigation
-				components={components}
-				currentStep={currentStep}
-				setCurrentStep={setCurrentStep}
-				swiperStepsEl={swiperStepsEl}
-			/>
+			<Navigation components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 			<Recipe choosenOptions={choosenOptions} />
 		</main>
 	);
 }
 
-export function Steps({ components, currentStep, setCurrentStep, swiperStepsEl }) {
-	const swiperParams = {
-		centeredSlides: true,
-		slideToClickedSlide: true,
-		breakpoints: {
-			768: { direction: "vertical" },
-		},
-		on: {
-			slideChange(e) {
-				setCurrentStep(e.activeIndex);
-			},
-		},
+export function Steps({ components, currentStep, setCurrentStep }) {
+	const activeEl = useRef(null);
+
+	const chooseStep = (stepId) => {
+		setCurrentStep(stepId);
+		console.log(activeEl.current);
 	};
 
-	useEffect(() => {
-		Object.assign(swiperStepsEl.current, swiperParams);
-		swiperStepsEl.current.initialize();
-	}, []);
-
 	return (
-		<section className="h-full max-h-64 overflow-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
-			<swiper-container init="false" ref={swiperStepsEl} className="w-full overflow-hidden">
+		<section className="flex overflow-x-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
+			<ul
+				className={`flex -translate-x-[${
+					activeEl?.current.offsetLeft + activeEl?.current.offsetWidth / 2
+				}px] flex-row gap-6 md:flex-col`}
+			>
 				{components.map((_component) => (
-					<swiper-slide key={_component.id} className="">
-						<span className="uppercase">{_component.name}</span>
-					</swiper-slide>
+					<li
+						className={_component.id === currentStep ? "text-xl/6 text-white" : "text-base/6 text-amber-600"}
+						key={_component.id}
+						ref={_component.id === currentStep ? activeEl : null}
+					>
+						<button onClick={() => chooseStep(_component.id)}>
+							<span className="uppercase">{_component.name}</span>
+						</button>
+					</li>
 				))}
-			</swiper-container>
+			</ul>
 		</section>
 	);
 }
@@ -106,7 +96,7 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 				<ul className="flex justify-center gap-6 text-white">
 					{currentComponent.options?.map((_currentComponentOption) => (
 						<li key={_currentComponentOption.id}>
-							<a href="#" onClick={() => updateChoosenOptions(_currentComponentOption)}>
+							<button onClick={() => updateChoosenOptions(_currentComponentOption)}>
 								<span
 									className={`text-center text-xl uppercase ${
 										currentComponentChoosenOptions.choosenOpt?.id === _currentComponentOption.id
@@ -116,7 +106,7 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 								>
 									{_currentComponentOption.name}
 								</span>
-							</a>
+							</button>
 						</li>
 					))}
 				</ul>
@@ -126,17 +116,15 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 	);
 }
 
-export function Navigation({ components, currentStep, setCurrentStep, swiperStepsEl }) {
+export function Navigation({ components, currentStep, setCurrentStep }) {
 	const prevStep = () => {
 		if (currentStep > 0) {
 			setCurrentStep(currentStep - 1);
-			swiperStepsEl.current.swiper.slidePrev();
 		}
 	};
 	const nextStep = () => {
 		if (currentStep < components.length - 1) {
 			setCurrentStep(currentStep + 1);
-			swiperStepsEl.current.swiper.slideNext();
 		} else if ((currentStep = components.length - 1)) {
 			alert("Finish");
 		}
