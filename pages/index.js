@@ -34,6 +34,7 @@ export default function Home() {
 		>
 			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 			<Options
+				currentStep={currentStep}
 				currentComponent={currentComponent}
 				choosenOptions={choosenOptions}
 				setChoosenOptions={setChoosenOptions}
@@ -47,25 +48,30 @@ export default function Home() {
 }
 
 export function Steps({ components, currentStep, setCurrentStep }) {
-	const activeEl = useRef(null);
+	const [activeStepPos, setActiveStepPos] = useState(null);
 
 	const chooseStep = (stepId) => {
 		setCurrentStep(stepId);
-		console.log(activeEl.current);
 	};
+
+	useEffect(() => {
+		const activeStep = document.querySelector(".active_step");
+		const calcPos = window.innerWidth / 2 - (activeStep?.offsetLeft + activeStep?.offsetWidth / 2);
+		setActiveStepPos(calcPos);
+	});
 
 	return (
 		<section className="flex overflow-x-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
 			<ul
-				className={`flex -translate-x-[${
-					activeEl?.current.offsetLeft + activeEl?.current.offsetWidth / 2
-				}px] flex-row gap-6 md:flex-col`}
+				style={{
+					transform: `translateX(${activeStepPos}px)`,
+				}}
+				className="flex w-fit flex-row gap-6 md:flex-col"
 			>
 				{components.map((_component) => (
 					<li
-						className={_component.id === currentStep ? "text-xl/6 text-white" : "text-base/6 text-amber-600"}
+						className={_component.id === currentStep ? "active_step text-xl/6 text-white" : "text-base/6 text-amber-600"}
 						key={_component.id}
-						ref={_component.id === currentStep ? activeEl : null}
 					>
 						<button onClick={() => chooseStep(_component.id)}>
 							<span className="uppercase">{_component.name}</span>
@@ -77,7 +83,9 @@ export function Steps({ components, currentStep, setCurrentStep }) {
 	);
 }
 
-export function Options({ currentComponent, choosenOptions, setChoosenOptions, currentComponentChoosenOptions }) {
+export function Options({ currentStep, currentComponent, choosenOptions, setChoosenOptions, currentComponentChoosenOptions }) {
+	const [activeOptionPos, setActiveOptionPos] = useState(null);
+
 	const updateChoosenOptions = (currentComponentOption) => {
 		const updatedOptions = choosenOptions.map((_choosenOption) =>
 			_choosenOption.componentId === currentComponent.id
@@ -87,25 +95,35 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 		setChoosenOptions(updatedOptions);
 	};
 
+	useEffect(() => {
+		const activeOpt = document.querySelector(".active_option");
+		const calcPos = window.innerWidth / 2 - (activeOpt?.offsetLeft + activeOpt?.offsetWidth / 2);
+		setActiveOptionPos(calcPos);
+	});
+
 	return (
-		<section className="overflow-hidden md:col-start-1 md:col-end-4 md:row-start-1">
+		<section className="overflow-x-hidden md:col-start-1 md:col-end-4 md:row-start-1">
 			<div className="mb-2 text-center text-amber-600">
 				Choose <span className="capitalize">{currentComponent.name}</span>
 			</div>
 			<div className="relative">
-				<ul className="flex justify-center gap-6 text-white">
+				<ul
+					style={{
+						transform: `translateX(${activeOptionPos}px)`,
+					}}
+					className="flex w-fit gap-6"
+				>
 					{currentComponent.options?.map((_currentComponentOption) => (
-						<li key={_currentComponentOption.id}>
+						<li
+							key={_currentComponentOption.id}
+							className={
+								currentComponentChoosenOptions.choosenOpt?.id === _currentComponentOption.id
+									? "active_option text-white"
+									: "text-amber-600"
+							}
+						>
 							<button onClick={() => updateChoosenOptions(_currentComponentOption)}>
-								<span
-									className={`text-center text-xl uppercase ${
-										currentComponentChoosenOptions.choosenOpt?.id === _currentComponentOption.id
-											? "text-white"
-											: "text-amber-600"
-									}`}
-								>
-									{_currentComponentOption.name}
-								</span>
+								<span className="text-xl uppercase">{_currentComponentOption.name}</span>
 							</button>
 						</li>
 					))}
