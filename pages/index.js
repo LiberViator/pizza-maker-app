@@ -58,7 +58,7 @@ export function Steps({ components, currentStep, setCurrentStep }) {
 		const activeStep = document.querySelector(".active_step");
 		const calcPos = window.innerWidth / 2 - (activeStep?.offsetLeft + activeStep?.offsetWidth / 2);
 		setActiveStepPos(calcPos);
-	});
+	}, [currentStep]);
 
 	return (
 		<section className="flex overflow-x-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
@@ -66,7 +66,7 @@ export function Steps({ components, currentStep, setCurrentStep }) {
 				style={{
 					transform: `translateX(${activeStepPos}px)`,
 				}}
-				className="flex w-fit flex-row gap-6 md:flex-col"
+				className="flex w-fit flex-row gap-6 transition-[transform,color] md:flex-col"
 			>
 				{components.map((_component) => (
 					<li
@@ -111,7 +111,7 @@ export function Options({ currentStep, currentComponent, choosenOptions, setChoo
 					style={{
 						transform: `translateX(${activeOptionPos}px)`,
 					}}
-					className="flex w-fit gap-6"
+					className="flex w-fit gap-6 transition-[transform,color]"
 				>
 					{currentComponent.options?.map((_currentComponentOption) => (
 						<li
