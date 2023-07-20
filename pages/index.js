@@ -30,11 +30,10 @@ export default function Home() {
 
 	return (
 		<main
-			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,min(16%,256px)),1fr,minmax(160px,min(16%,256px))] md:grid-rows-[auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-20 ${font.className}`}
+			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,min(16%,256px)),1fr,minmax(160px,min(16%,256px))] md:grid-rows-[auto,auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-16 ${font.className}`}
 		>
 			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
 			<Options
-				currentStep={currentStep}
 				currentComponent={currentComponent}
 				choosenOptions={choosenOptions}
 				setChoosenOptions={setChoosenOptions}
@@ -48,7 +47,8 @@ export default function Home() {
 }
 
 export function Steps({ components, currentStep, setCurrentStep }) {
-	const [activeStepPos, setActiveStepPos] = useState(null);
+	const [activeStepPos, setActiveStepPos] = useState(0);
+	const stepContainer = useRef(null);
 
 	const chooseStep = (stepId) => {
 		setCurrentStep(stepId);
@@ -56,35 +56,39 @@ export function Steps({ components, currentStep, setCurrentStep }) {
 
 	useEffect(() => {
 		const activeStep = document.querySelector(".active_step");
-		const calcPos = window.innerWidth / 2 - (activeStep?.offsetLeft + activeStep?.offsetWidth / 2);
+		const calcPos = stepContainer.current.offsetWidth / 2 - (activeStep?.offsetLeft + activeStep?.offsetWidth / 2);
 		setActiveStepPos(calcPos);
 	}, [currentStep]);
 
 	return (
-		<section className="flex overflow-x-hidden md:col-start-1 md:row-start-1 md:row-end-4 md:self-center md:justify-self-start">
-			<ul
-				style={{
-					transform: `translateX(${activeStepPos}px)`,
-				}}
-				className="flex w-fit flex-row gap-6 transition-[transform,color] md:flex-col"
-			>
-				{components.map((_component) => (
-					<li
-						className={_component.id === currentStep ? "active_step text-xl/6 text-white" : "text-base/6 text-amber-600"}
-						key={_component.id}
-					>
-						<button onClick={() => chooseStep(_component.id)}>
-							<span className="uppercase">{_component.name}</span>
-						</button>
-					</li>
-				))}
-			</ul>
+		<section className="overflow-x-hidden md:col-start-1 md:col-end-4 md:row-start-1">
+			<div ref={stepContainer} className="relative">
+				<ul
+					style={{
+						transform: `translateX(${activeStepPos}px)`,
+					}}
+					className="flex w-fit gap-6 transition-[transform,color] md:gap-8"
+				>
+					{components.map((_component) => (
+						<li
+							className={_component.id === currentStep ? "active_step text-xl/6 text-white" : "text-base/6 text-amber-600"}
+							key={_component.id}
+						>
+							<button onClick={() => chooseStep(_component.id)}>
+								<span className="uppercase">{_component.name}</span>
+							</button>
+						</li>
+					))}
+				</ul>
+				<span className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-amber-900 via-amber-900/0 to-amber-900"></span>
+			</div>
 		</section>
 	);
 }
 
-export function Options({ currentStep, currentComponent, choosenOptions, setChoosenOptions, currentComponentChoosenOptions }) {
-	const [activeOptionPos, setActiveOptionPos] = useState(null);
+export function Options({ currentComponent, choosenOptions, setChoosenOptions, currentComponentChoosenOptions }) {
+	const [activeOptionPos, setActiveOptionPos] = useState(0);
+	const optContainer = useRef(null);
 
 	const updateChoosenOptions = (currentComponentOption) => {
 		const updatedOptions = choosenOptions.map((_choosenOption) =>
@@ -97,21 +101,19 @@ export function Options({ currentStep, currentComponent, choosenOptions, setChoo
 
 	useEffect(() => {
 		const activeOpt = document.querySelector(".active_option");
-		const calcPos = window.innerWidth / 2 - (activeOpt?.offsetLeft + activeOpt?.offsetWidth / 2);
+		const calcPos = optContainer.current.offsetWidth / 2 - (activeOpt?.offsetLeft + activeOpt?.offsetWidth / 2);
 		setActiveOptionPos(calcPos);
-	});
+	}, [currentComponent, choosenOptions]);
 
 	return (
-		<section className="overflow-x-hidden md:col-start-1 md:col-end-4 md:row-start-1">
-			<div className="mb-2 text-center text-amber-600">
-				Choose <span className="capitalize">{currentComponent.name}</span>
-			</div>
-			<div className="relative">
+		<section className="overflow-x-hidden md:col-start-1 md:col-end-4 md:row-start-2">
+			<div className="mb-2 text-center text-amber-600">Choose options</div>
+			<div ref={optContainer} className="relative">
 				<ul
 					style={{
 						transform: `translateX(${activeOptionPos}px)`,
 					}}
-					className="flex w-fit gap-6 transition-[transform,color]"
+					className="flex w-fit gap-6 transition-[transform,color] md:gap-8"
 				>
 					{currentComponent.options?.map((_currentComponentOption) => (
 						<li
@@ -128,7 +130,7 @@ export function Options({ currentStep, currentComponent, choosenOptions, setChoo
 						</li>
 					))}
 				</ul>
-				<span className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-amber-900 via-amber-900/0 to-amber-900 "></span>
+				<span className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-amber-900 via-amber-900/0 to-amber-900"></span>
 			</div>
 		</section>
 	);
@@ -149,7 +151,7 @@ export function Navigation({ components, currentStep, setCurrentStep }) {
 	};
 
 	return (
-		<section className="paddings flex w-full justify-center gap-4 justify-self-center md:col-start-2 md:col-end-2 md:row-start-3 md:row-end-3 md:self-end">
+		<section className="paddings flex w-full justify-center gap-4 justify-self-center md:col-start-2 md:col-end-2 md:row-start-4 md:row-end-4 md:self-end">
 			<button onClick={prevStep} className="flex h-12 w-12 items-center justify-center rounded-3xl bg-white shadow-xl">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -183,7 +185,7 @@ export function Navigation({ components, currentStep, setCurrentStep }) {
 }
 
 export function Recipe({ choosenOptions }) {
-	const [total, setTotal] = useState();
+	const [total, setTotal] = useState(0);
 	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
@@ -198,7 +200,7 @@ export function Recipe({ choosenOptions }) {
 			<section
 				className={`${
 					isOpen ? "translate-y-0" : "translate-y-[calc(100%-64px)]"
-				} absolute inset-x-0 bottom-0 z-10 flex max-h-[calc(100vh-32px)] flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3 md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-4 md:translate-y-0 md:self-end md:bg-transparent md:p-0`}
+				} absolute inset-x-0 bottom-0 z-10 flex max-h-[calc(100vh-32px)] flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3 md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-5 md:translate-y-0 md:self-end md:bg-transparent md:p-0`}
 				onClick={() => !isOpen && setIsOpen(!isOpen)}
 			>
 				<span className="mb-4 h-1 w-20 flex-shrink-0 rounded bg-white md:hidden"></span>
