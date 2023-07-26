@@ -204,7 +204,7 @@ export function Recipe({ choosenOptions }) {
 				onClick={() => !isOpen && setIsOpen(!isOpen)}
 			>
 				<span className="mb-4 h-1 w-20 flex-shrink-0 rounded bg-white md:hidden"></span>
-				<div className="flex h-auto w-full flex-col gap-4 overflow-y-scroll text-amber-950 md:overflow-y-auto md:text-white">
+				<div className="flex h-auto w-full flex-col gap-4 overflow-y-auto text-amber-950 md:overflow-y-auto md:text-white">
 					<div className="flex justify-between">
 						<span>Your order</span>
 						<span className={`${isOpen ? "hidden" : ""} text-right md:hidden`}>{total}</span>

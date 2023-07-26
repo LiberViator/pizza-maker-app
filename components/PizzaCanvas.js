@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useThree, Canvas } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, Bounds, useBounds } from "@react-three/drei";
 
 export default function PizzaCanvas({ currentStep }) {
 	return (
@@ -22,9 +22,14 @@ export default function PizzaCanvas({ currentStep }) {
 
 export function PizzaModel({ currentStep }) {
 	const { nodes, materials } = useGLTF("/pizza.gltf");
+	// const bounds = useBounds();
+	// useEffect(() => {
+	// 	// Calculate scene bounds
+	// 	bounds?.refresh().clip().fit();
+	// });
 
 	return (
-		<>
+		<Bounds fit clip observe margin={1}>
 			<group dispose={null}>
 				<mesh castShadow receiveShadow geometry={nodes.group1309335234.geometry} material={materials.mat14} />
 				<mesh castShadow receiveShadow geometry={nodes.group13992555.geometry} material={materials.mat19} />
@@ -57,7 +62,7 @@ export function PizzaModel({ currentStep }) {
 				<mesh castShadow receiveShadow geometry={nodes.group565404572.geometry} material={materials.mat10} />
 				<mesh castShadow receiveShadow geometry={nodes.group1475154722.geometry} material={materials.mat10} />
 			</group>
-		</>
+		</Bounds>
 	);
 }
 
