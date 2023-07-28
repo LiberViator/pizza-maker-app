@@ -1,46 +1,46 @@
 [
 	{
 		"id": 0,
-		"name": "bread",
+		"name": "Bread",
 		"options": [
-			{ "id": 0, "name": "thin", "price": 10, "model3d": {} },
-			{ "id": 1, "name": "thick", "price": 12 }
+			{ "id": 0, "name": "Thin", "price": 10, "model3d": {} },
+			{ "id": 1, "name": "Thick", "price": 12 }
 		]
 	},
 	{
 		"id": 1,
-		"name": "souce",
+		"name": "Souce",
 		"options": [
-			{ "id": 0, "name": "tomato", "price": 10 },
-			{ "id": 1, "name": "pesto", "price": 12 }
+			{ "id": 0, "name": "Tomato", "price": 10 },
+			{ "id": 1, "name": "Pesto", "price": 12 }
 		]
 	},
 	{
 		"id": 2,
-		"name": "vegetables",
+		"name": "Vegetables",
 		"options": [
-			{ "id": 0, "name": "none", "price": 0 },
-			{ "id": 1, "name": "paprica", "price": 10 },
-			{ "id": 2, "name": "olives", "price": 12 },
-			{ "id": 3, "name": "tomatoes", "price": 10 }
+			{ "id": 0, "name": "None", "price": 0 },
+			{ "id": 1, "name": "Paprica", "price": 10 },
+			{ "id": 2, "name": "Olives", "price": 12 },
+			{ "id": 3, "name": "Tomatoes", "price": 10 }
 		]
 	},
 	{
 		"id": 3,
-		"name": "cheese",
+		"name": "Cheese",
 		"options": [
-			{ "id": 0, "name": "none", "price": 0 },
-			{ "id": 1, "name": "parmesan", "price": 10 },
-			{ "id": 2, "name": "mozzarella", "price": 12 }
+			{ "id": 0, "name": "None", "price": 0 },
+			{ "id": 1, "name": "Parmesan", "price": 10 },
+			{ "id": 2, "name": "Mozzarella", "price": 12 }
 		]
 	},
 	{
 		"id": 4,
-		"name": "meat",
+		"name": "Meat",
 		"options": [
-			{ "id": 0, "name": "none", "price": 0 },
-			{ "id": 1, "name": "chicken", "price": 10 },
-			{ "id": 2, "name": "salami", "price": 12 }
+			{ "id": 0, "name": "None", "price": 0 },
+			{ "id": 1, "name": "Chicken", "price": 10 },
+			{ "id": 2, "name": "Salami", "price": 12 }
 		]
 	}
 ]

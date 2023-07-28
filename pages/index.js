@@ -9,12 +9,15 @@ export default function Home() {
 	const [components, setComponent] = useState([]);
 	const [choosenOptions, setChoosenOptions] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
+	const [total, setTotal] = useState(0);
 
+	// Fetching data
 	useEffect(() => {
 		fetch("/db/pizzaOptions.json")
 			.then((res) => res.json())
 			.then((data) => setComponent(data));
 	}, []);
+	// Updating choosing options
 	useEffect(() => {
 		const newOptions = components.map((_component) => ({
 			componentId: _component.id,
@@ -23,6 +26,12 @@ export default function Home() {
 		}));
 		setChoosenOptions(newOptions);
 	}, [components]);
+	// Calculating total
+	useEffect(() => {
+		const pricesArray = choosenOptions.map((choosenOption) => choosenOption.choosenOpt?.price || 0);
+		const totalPrice = pricesArray.reduce((a, b) => a + b, 0);
+		setTotal(totalPrice);
+	}, [choosenOptions]);
 
 	const currentComponent = components.find((_component) => _component.id === currentStep) || {};
 	const currentComponentChoosenOptions =
@@ -40,8 +49,14 @@ export default function Home() {
 				currentComponentChoosenOptions={currentComponentChoosenOptions}
 			/>
 			<PizzaCanvas currentStep={currentStep} />
-			<Navigation components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
-			<Recipe choosenOptions={choosenOptions} />
+			<Navigation
+				components={components}
+				choosenOptions={choosenOptions}
+				currentStep={currentStep}
+				setCurrentStep={setCurrentStep}
+				total={total}
+			/>
+			<Recipe choosenOptions={choosenOptions} total={total} />
 		</main>
 	);
 }
@@ -136,7 +151,11 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 	);
 }
 
-export function Navigation({ components, currentStep, setCurrentStep }) {
+export function Navigation({ components, choosenOptions, currentStep, setCurrentStep, total }) {
+	const message = `Your order:\n${choosenOptions.map(
+		(_choosenOption) => `\n${_choosenOption.componentName}: ${_choosenOption.choosenOpt?.name}`
+	)}\n\nTotal: ${total}`;
+
 	const prevStep = () => {
 		if (currentStep > 0) {
 			setCurrentStep(currentStep - 1);
@@ -146,7 +165,7 @@ export function Navigation({ components, currentStep, setCurrentStep }) {
 		if (currentStep < components.length - 1) {
 			setCurrentStep(currentStep + 1);
 		} else if ((currentStep = components.length - 1)) {
-			alert("Finish");
+			alert(message);
 		}
 	};
 
@@ -184,45 +203,41 @@ export function Navigation({ components, currentStep, setCurrentStep }) {
 	);
 }
 
-export function Recipe({ choosenOptions }) {
-	const [total, setTotal] = useState(0);
+export function Recipe({ choosenOptions, total }) {
 	const [isOpen, setIsOpen] = useState(false);
-
-	useEffect(() => {
-		const pricesArray = choosenOptions.map((choosenOption) => choosenOption.choosenOpt?.price || 0);
-		const totalPrice = pricesArray.reduce((a, b) => a + b, 0);
-		setTotal(totalPrice);
-	}, [choosenOptions]);
-	useEffect(() => {});
 
 	return (
 		<>
 			<section
 				className={`${
 					isOpen ? "translate-y-0" : "translate-y-[calc(100%-64px)]"
-				} absolute inset-x-0 bottom-0 z-10 flex max-h-[calc(100vh-32px)] flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3 md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-5 md:translate-y-0 md:self-end md:bg-transparent md:p-0`}
-				onClick={() => !isOpen && setIsOpen(!isOpen)}
+				} pointer-events-none absolute inset-x-0 bottom-0 z-10 flex  max-h-[calc(100vh-32px)] justify-center   transition-transform sm:px-6   md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-5 md:translate-y-0 md:self-end md:px-0  `}
 			>
-				<span className="mb-4 h-1 w-20 flex-shrink-0 rounded bg-white md:hidden"></span>
-				<div className="flex h-auto w-full flex-col gap-4 overflow-y-auto text-amber-950 md:overflow-y-auto md:text-white">
-					<div className="flex justify-between">
-						<span>Your order</span>
-						<span className={`${isOpen ? "hidden" : ""} text-right md:hidden`}>{total}</span>
-					</div>
-					<hr />
-					<ul className="flex flex-col gap-4">
-						{choosenOptions.map((_choosenOption) => (
-							<li className="flex w-full gap-3 overflow-x-hidden capitalize" key={_choosenOption.componentId}>
-								<span className="text-amber-600">{_choosenOption.componentName}:</span>
-								<span className="flex-grow">{_choosenOption.choosenOpt?.name}</span>
-								<span className="text-right text-amber-600">{_choosenOption.choosenOpt?.price}</span>
-							</li>
-						))}
-					</ul>
-					<hr />
-					<div className="flex justify-between">
-						<span>Total</span>
-						<span className="text-right">{total}</span>
+				<div
+					className="pointer-events-auto flex w-full max-w-lg flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3 md:pointer-events-none md:bg-transparent md:p-0"
+					onClick={() => !isOpen && setIsOpen(!isOpen)}
+				>
+					<span className="mb-4 h-1 w-20 flex-shrink-0 rounded bg-white md:hidden"></span>
+					<div className="flex h-auto w-full flex-col gap-4 overflow-y-auto text-amber-950 md:overflow-y-auto md:text-white">
+						<div className="flex justify-between">
+							<span>Your order</span>
+							<span className={`${isOpen ? "hidden" : ""} text-right md:hidden`}>{total}</span>
+						</div>
+						<hr />
+						<ul className="flex flex-col gap-4">
+							{choosenOptions.map((_choosenOption) => (
+								<li className="flex w-full gap-3 overflow-x-hidden capitalize" key={_choosenOption.componentId}>
+									<span className="text-amber-600">{_choosenOption.componentName}:</span>
+									<span className="flex-grow">{_choosenOption.choosenOpt?.name}</span>
+									<span className="text-right text-amber-600">{_choosenOption.choosenOpt?.price}</span>
+								</li>
+							))}
+						</ul>
+						<hr />
+						<div className="flex justify-between">
+							<span>Total</span>
+							<span className="text-right">{total}</span>
+						</div>
 					</div>
 				</div>
 			</section>
