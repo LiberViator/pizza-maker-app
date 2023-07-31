@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { Montserrat } from "next/font/google";
 
 import PizzaCanvas from "@/components/PizzaCanvas";
@@ -10,7 +10,15 @@ export default function Home() {
 	const [choosenOptions, setChoosenOptions] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [total, setTotal] = useState(0);
+	const [windowSize, setWindowSize] = useState({ innerWidth: 0, innerHeight: 0 });
 
+	// Updating window size
+	useLayoutEffect(() => {
+		function updateWindowSize() {
+			setWindowSize({ innerWidth: window.innerWidth, innerHeight: window.innerHeight });
+		}
+		window.addEventListener("resize", updateWindowSize);
+	}, []);
 	// Fetching data
 	useEffect(() => {
 		fetch("/db/pizzaOptions.json")
@@ -41,12 +49,13 @@ export default function Home() {
 		<main
 			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,min(16%,256px)),1fr,minmax(160px,min(16%,256px))] md:grid-rows-[auto,auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-16 ${font.className}`}
 		>
-			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} />
+			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} windowSize={windowSize} />
 			<Options
 				currentComponent={currentComponent}
 				choosenOptions={choosenOptions}
 				setChoosenOptions={setChoosenOptions}
 				currentComponentChoosenOptions={currentComponentChoosenOptions}
+				windowSize={windowSize}
 			/>
 			<PizzaCanvas currentStep={currentStep} />
 			<Navigation
@@ -61,7 +70,7 @@ export default function Home() {
 	);
 }
 
-export function Steps({ components, currentStep, setCurrentStep }) {
+export function Steps({ components, currentStep, setCurrentStep, windowSize }) {
 	const [activeStepPos, setActiveStepPos] = useState(0);
 	const stepContainer = useRef(null);
 
@@ -71,9 +80,10 @@ export function Steps({ components, currentStep, setCurrentStep }) {
 
 	useEffect(() => {
 		const activeStep = document.querySelector(".active_step");
-		const calcPos = stepContainer.current.offsetWidth / 2 - (activeStep?.offsetLeft + activeStep?.offsetWidth / 2);
+		const stepCenter = activeStep?.offsetLeft + activeStep?.offsetWidth / 2;
+		const calcPos = stepContainer.current.offsetWidth / 2 - stepCenter;
 		setActiveStepPos(calcPos);
-	}, [currentStep]);
+	}, [currentStep, windowSize]);
 
 	return (
 		<section className="overflow-x-hidden md:col-start-1 md:col-end-4 md:row-start-1">
@@ -101,7 +111,7 @@ export function Steps({ components, currentStep, setCurrentStep }) {
 	);
 }
 
-export function Options({ currentComponent, choosenOptions, setChoosenOptions, currentComponentChoosenOptions }) {
+export function Options({ currentComponent, choosenOptions, setChoosenOptions, currentComponentChoosenOptions, windowSize }) {
 	const [activeOptionPos, setActiveOptionPos] = useState(0);
 	const optContainer = useRef(null);
 
@@ -118,7 +128,7 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 		const activeOpt = document.querySelector(".active_option");
 		const calcPos = optContainer.current.offsetWidth / 2 - (activeOpt?.offsetLeft + activeOpt?.offsetWidth / 2);
 		setActiveOptionPos(calcPos);
-	}, [currentComponent, choosenOptions]);
+	}, [currentComponent, choosenOptions, windowSize]);
 
 	return (
 		<section className="overflow-x-hidden md:col-start-1 md:col-end-4 md:row-start-2">
@@ -211,7 +221,7 @@ export function Recipe({ choosenOptions, total }) {
 			<section
 				className={`${
 					isOpen ? "translate-y-0" : "translate-y-[calc(100%-64px)]"
-				} pointer-events-none absolute inset-x-0 bottom-0 z-10 flex  max-h-[calc(100vh-32px)] justify-center   transition-transform sm:px-6   md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-5 md:translate-y-0 md:self-end md:px-0  `}
+				} pointer-events-none absolute inset-x-0 bottom-0 z-10 flex  max-h-[calc(100vh-32px)] justify-center transition-transform md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-5 md:translate-y-0 md:self-end`}
 			>
 				<div
 					className="pointer-events-auto flex w-full max-w-lg flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3 md:pointer-events-none md:bg-transparent md:p-0"
