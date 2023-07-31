@@ -4,7 +4,7 @@ import { useGLTF, Bounds, useBounds } from "@react-three/drei";
 
 export default function PizzaCanvas({ currentStep }) {
 	return (
-		<section className="relative md:col-start-2 md:col-end-2 md:row-start-3 md:row-end-3">
+		<section className="relative lg:col-start-1 lg:col-end-4 lg:row-start-3 lg:row-end-3">
 			<Canvas
 				style={{ position: "absolute" }}
 				camera={{

@@ -47,7 +47,7 @@ export default function Home() {
 
 	return (
 		<main
-			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 md:grid-cols-[minmax(160px,min(16%,256px)),1fr,minmax(160px,min(16%,256px))] md:grid-rows-[auto,auto,1fr,auto] md:px-6 md:py-6 lg:px-20 lg:py-16 ${font.className}`}
+			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 lg:grid-cols-[minmax(160px,min(32%,320px)),1fr,minmax(160px,min(32%,320px))] lg:grid-rows-[auto,auto,1fr,auto] lg:px-6 lg:pt-6 xl:px-20 xl:pt-16 ${font.className}`}
 		>
 			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} windowSize={windowSize} />
 			<Options
@@ -83,20 +83,22 @@ export function Steps({ components, currentStep, setCurrentStep, windowSize }) {
 		const stepCenter = activeStep?.offsetLeft + activeStep?.offsetWidth / 2;
 		const calcPos = stepContainer.current.offsetWidth / 2 - stepCenter;
 		setActiveStepPos(calcPos);
-	}, [currentStep, windowSize]);
+	}, [components, currentStep, windowSize]);
 
 	return (
-		<section className="overflow-x-hidden md:col-start-1 md:col-end-4 md:row-start-1">
+		<section className="overflow-x-hidden lg:col-start-1 lg:col-end-4 lg:row-start-1">
 			<div ref={stepContainer} className="relative">
 				<ul
 					style={{
 						transform: `translateX(${activeStepPos}px)`,
 					}}
-					className="flex w-fit gap-6 transition-[transform,color] md:gap-8"
+					className="flex w-fit items-center gap-6 transition-[transform,color] duration-200 lg:gap-8"
 				>
 					{components.map((_component) => (
 						<li
-							className={_component.id === currentStep ? "active_step text-xl/6 text-white" : "text-base/6 text-amber-600"}
+							className={
+								_component.id === currentStep ? "active_step text-xl text-white" : "text-base font-light text-amber-600"
+							}
 							key={_component.id}
 						>
 							<button onClick={() => chooseStep(_component.id)}>
@@ -131,26 +133,26 @@ export function Options({ currentComponent, choosenOptions, setChoosenOptions, c
 	}, [currentComponent, choosenOptions, windowSize]);
 
 	return (
-		<section className="overflow-x-hidden md:col-start-1 md:col-end-4 md:row-start-2">
+		<section className="overflow-x-hidden lg:col-start-1 lg:col-end-4 lg:row-start-2">
 			<div className="mb-2 text-center text-amber-600">Choose options</div>
 			<div ref={optContainer} className="relative">
 				<ul
 					style={{
 						transform: `translateX(${activeOptionPos}px)`,
 					}}
-					className="flex w-fit gap-6 transition-[transform,color] md:gap-8"
+					className="flex w-fit items-center gap-6 transition-[transform,color] duration-200 lg:gap-8"
 				>
 					{currentComponent.options?.map((_currentComponentOption) => (
 						<li
 							key={_currentComponentOption.id}
 							className={
 								currentComponentChoosenOptions.choosenOpt?.id === _currentComponentOption.id
-									? "active_option text-white"
-									: "text-amber-600"
+									? "active_option text-xl text-white"
+									: "font-light text-amber-600"
 							}
 						>
 							<button onClick={() => updateChoosenOptions(_currentComponentOption)}>
-								<span className="text-xl uppercase">{_currentComponentOption.name}</span>
+								<span className="uppercase">{_currentComponentOption.name}</span>
 							</button>
 						</li>
 					))}
@@ -180,7 +182,7 @@ export function Navigation({ components, choosenOptions, currentStep, setCurrent
 	};
 
 	return (
-		<section className="paddings flex w-full justify-center gap-4 justify-self-center md:col-start-2 md:col-end-2 md:row-start-4 md:row-end-4 md:self-end">
+		<section className="paddings flex w-full justify-center gap-4 justify-self-center lg:col-start-2 lg:col-end-2 lg:row-start-4 lg:row-end-4 lg:mb-6 lg:self-end xl:mb-16">
 			<button onClick={prevStep} className="flex h-12 w-12 items-center justify-center rounded-3xl bg-white shadow-xl">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -220,20 +222,20 @@ export function Recipe({ choosenOptions, total }) {
 		<>
 			<section
 				className={`${
-					isOpen ? "translate-y-0" : "translate-y-[calc(100%-64px)]"
-				} pointer-events-none absolute inset-x-0 bottom-0 z-10 flex  max-h-[calc(100vh-32px)] justify-center transition-transform md:static md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-5 md:translate-y-0 md:self-end`}
+					isOpen ? "translate-y-0 duration-300" : "translate-y-[calc(100%-64px)] duration-200"
+				} absolute inset-x-0 bottom-0 z-10 flex max-h-[calc(100vh-32px)] flex-col items-center px-2 transition-transform lg:static lg:col-start-3 lg:col-end-4 lg:row-start-1 lg:row-end-5 lg:self-end lg:px-0`}
+				onClick={() => !isOpen && setIsOpen(!isOpen)}
+				onMouseEnter={() => setIsOpen(true)}
+				onMouseLeave={() => setIsOpen(false)}
 			>
-				<div
-					className="pointer-events-auto flex w-full max-w-lg flex-col items-center rounded-t-xl bg-stone-300 px-5 pb-8 pt-3 md:pointer-events-none md:bg-transparent md:p-0"
-					onClick={() => !isOpen && setIsOpen(!isOpen)}
-				>
-					<span className="mb-4 h-1 w-20 flex-shrink-0 rounded bg-white md:hidden"></span>
-					<div className="flex h-auto w-full flex-col gap-4 overflow-y-auto text-amber-950 md:overflow-y-auto md:text-white">
+				<span className="h-2 w-full max-w-sm bg-recipe-pattern bg-repeat-x"></span>
+				<div className="pointer-events-auto relative flex w-full max-w-sm flex-col items-center bg-white px-5 pb-8 pt-6">
+					<div className="flex h-auto w-full flex-col gap-4 overflow-y-auto text-amber-950 lg:overflow-y-auto lg:text-black">
 						<div className="flex justify-between">
 							<span>Your order</span>
-							<span className={`${isOpen ? "hidden" : ""} text-right md:hidden`}>{total}</span>
+							<span className={`${isOpen ? "text-white" : ""} text-right transition-colors`}>{total}</span>
 						</div>
-						<hr />
+						<hr className="border-gray-200" />
 						<ul className="flex flex-col gap-4">
 							{choosenOptions.map((_choosenOption) => (
 								<li className="flex w-full gap-3 overflow-x-hidden capitalize" key={_choosenOption.componentId}>
@@ -243,7 +245,7 @@ export function Recipe({ choosenOptions, total }) {
 								</li>
 							))}
 						</ul>
-						<hr />
+						<hr className="border-gray-200" />
 						<div className="flex justify-between">
 							<span>Total</span>
 							<span className="text-right">{total}</span>
@@ -251,10 +253,7 @@ export function Recipe({ choosenOptions, total }) {
 					</div>
 				</div>
 			</section>
-			<aside
-				className={`${!isOpen ? "hidden" : ""}absolute inset-0 md:hidden`}
-				onClick={() => isOpen && setIsOpen(!isOpen)}
-			></aside>
+			<aside className={`${!isOpen ? "hidden" : ""} absolute inset-0`} onClick={() => isOpen && setIsOpen(!isOpen)}></aside>
 		</>
 	);
 }
