@@ -47,7 +47,7 @@ export default function Home() {
 
 	return (
 		<main
-			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 lg:grid-cols-[minmax(160px,min(32%,320px)),1fr,minmax(160px,min(32%,320px))] lg:grid-rows-[auto,auto,1fr,auto] lg:px-6 lg:pt-6 xl:px-20 xl:pt-16 ${font.className}`}
+			className={`grid grid-rows-[auto,auto,1fr,auto,64px] gap-8 overflow-hidden bg-amber-900 pt-4 lg:grid-cols-[minmax(160px,min(24%,320px)),1fr,minmax(160px,min(24%,320px))] lg:grid-rows-[auto,auto,1fr,auto] lg:px-6 lg:pt-6 xl:px-20 xl:pt-16 ${font.className}`}
 		>
 			<Steps components={components} currentStep={currentStep} setCurrentStep={setCurrentStep} windowSize={windowSize} />
 			<Options
@@ -216,7 +216,10 @@ export function Navigation({ components, choosenOptions, currentStep, setCurrent
 }
 
 export function Recipe({ choosenOptions, total }) {
+	const [isLocked, setIsLocked] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
+
+	const handleOpen = (state) => !isLocked && setIsOpen(state);
 
 	return (
 		<>
@@ -224,16 +227,16 @@ export function Recipe({ choosenOptions, total }) {
 				className={`${
 					isOpen ? "translate-y-0 duration-300" : "translate-y-[calc(100%-64px)] duration-200"
 				} absolute inset-x-0 bottom-0 z-10 flex max-h-[calc(100vh-32px)] flex-col items-center px-2 transition-transform lg:static lg:col-start-3 lg:col-end-4 lg:row-start-1 lg:row-end-5 lg:self-end lg:px-0`}
-				onClick={() => !isOpen && setIsOpen(!isOpen)}
-				onMouseEnter={() => setIsOpen(true)}
-				onMouseLeave={() => setIsOpen(false)}
+				onClick={() => !isOpen && handleOpen(!isOpen)}
+				onMouseEnter={() => handleOpen(true)}
+				onMouseLeave={() => handleOpen(false)}
 			>
 				<span className="h-2 w-full max-w-sm bg-recipe-pattern bg-repeat-x"></span>
 				<div className="pointer-events-auto relative flex w-full max-w-sm flex-col items-center bg-white px-5 pb-8 pt-6">
 					<div className="flex h-auto w-full flex-col gap-4 overflow-y-auto text-amber-950 lg:overflow-y-auto lg:text-black">
 						<div className="flex justify-between">
 							<span>Your order</span>
-							<span className={`${isOpen ? "text-white" : ""} text-right transition-colors`}>{total}</span>
+							<span className={`${isOpen ? "opacity-0" : ""} text-right transition-opacity`}>{total}</span>
 						</div>
 						<hr className="border-gray-200" />
 						<ul className="flex flex-col gap-4">
@@ -253,7 +256,7 @@ export function Recipe({ choosenOptions, total }) {
 					</div>
 				</div>
 			</section>
-			<aside className={`${!isOpen ? "hidden" : ""} absolute inset-0`} onClick={() => isOpen && setIsOpen(!isOpen)}></aside>
+			<aside className={`${!isOpen ? "hidden" : ""} absolute inset-0`} onClick={() => isOpen && handleOpen(!isOpen)}></aside>
 		</>
 	);
 }
