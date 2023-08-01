@@ -43,5 +43,5 @@ Distributed under the MIT License. See [LICENSE.txt][link_license] for more info
 
 <!-- Links -->
 
-[link_demo]: [https://liberviator.github.io/pizza-maker-app/]
+[link_demo]: https://liberviator.github.io/pizza-maker-app/
 [link_license]: /LICENSE.txt
