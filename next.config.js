@@ -2,8 +2,8 @@
 
 const nextConfig = {
 	reactStrictMode: true,
-	// assetPrefix: "/pizza-maker-app",
-	// basePath: "/pizza-maker-app",
+	assetPrefix: "/pizza-maker-app",
+	basePath: "/pizza-maker-app",
 };
 
 module.exports = nextConfig;
