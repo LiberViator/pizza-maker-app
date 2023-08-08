@@ -22,11 +22,6 @@ export default function PizzaCanvas({ currentStep }) {
 
 export function PizzaModel({ currentStep }) {
 	const { nodes, materials } = useGLTF("/pizza.gltf");
-	// const bounds = useBounds();
-	// useEffect(() => {
-	// 	// Calculate scene bounds
-	// 	bounds?.refresh().clip().fit();
-	// });
 
 	return (
 		<Bounds fit clip observe margin={1}>
