@@ -23,8 +23,8 @@ jobs:
         run: npm run build && npm run export && touch ./out/.nojekyll
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: main # The branch the action will deploy to
-          FOLDER: out # The folder the action will deploy to
+        # uses: JamesIves/github-pages-deploy-action@v4.4.1
+        # with:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #   BRANCH: gh-pages # The branch the action will deploy to
+        #   FOLDER: out # The folder the action will deploy to
