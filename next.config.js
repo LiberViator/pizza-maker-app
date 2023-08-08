@@ -2,7 +2,7 @@
 
 const nextConfig = {
 	reactStrictMode: true,
-	assetPrefix: "/pizza-maker-app",
+	// assetPrefix: "/pizza-maker-app",
 	// basePath: "/pizza-maker-app",
 };
 
