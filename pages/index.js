@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useLayoutEffect } from "react";
+import Link from "next/link";
 import { Montserrat } from "next/font/google";
 
 import PizzaCanvas from "@/components/PizzaCanvas";

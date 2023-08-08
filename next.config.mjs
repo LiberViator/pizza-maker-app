@@ -2,6 +2,11 @@
 const nextConfig = {
 	reactStrictMode: true,
 	basePath: "/pizza-maker-app",
+	images: {
+		loader: "akamai",
+		path: "",
+	},
+	assetPrefix: "./",
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;
