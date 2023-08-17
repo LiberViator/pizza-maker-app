@@ -1,10 +1,6 @@
 <h1 align="center"> Pizza Maker App </h1>
 <p align="center">Pizza maker web app for online pizzeria ordering, made with NextJS.</p>
 
-## 🔗 Links
-
-[Live Demo][link_demo]
-
 ## 📋 Overview
 
 Introducing Pizza Maker - a NextJS web app for ordering customized pizzas! Explore a 3D pizza model, pick your favorite toppings, and indulge in a coding-infused pizza experience. Satiate your cravings now!
